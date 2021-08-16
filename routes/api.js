@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const Workout = require("../models/index.js");
+const {Workout} = require("../models/index.js");
 
-router.get("/api/workouts", (req, res) => {
+router.get("/workouts", (req, res) => {
     Workout.aggregate([
         {
             $addFields: {
@@ -13,15 +13,15 @@ router.get("/api/workouts", (req, res) => {
             }
         }
     ])
-    .then(dbWorkout => {
-        res.json(dbWorkout);
-    })
-    .catch(err => {
-        res.json(err);
-    });
+        .then(dbWorkout => {
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.json(err);
+        });
 })
 
-router.get("/api/workouts/range", (req, res) => {
+router.get("/workouts/range", (req, res) => {
     Workout.aggregate([
         {
             $addFields: {
@@ -33,11 +33,51 @@ router.get("/api/workouts/range", (req, res) => {
             }
         }
     ])
-    .limit(7)
-    .then(dbWorkout => {
+        .limit(7)
+        .then(dbWorkout => {
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.json(err);
+        });
+})
+
+  router.post("/workouts", ({ body }, res) => {
+    Workout.create(body)
+      .then(dbWorkout => {
         res.json(dbWorkout);
+      })
+      .catch(err => {
+        res.json(err);
+      });
+  });
+
+  router.put('/workouts/:id', (req, res) => {
+    var id = req.params.id
+    var body = req.body
+    Workout.create({exercises: body})
+    .then(data => {
+      // console.log(data)
+      res.json(data)
     })
     .catch(err => {
-        res.json(err);
-    });
-})
+      // console.log(err)
+      res.json(err)
+    })
+  })
+
+
+//   router.put("/workouts/:id", function({body,params}, res) {
+//       console.log("inside the put route")
+//     db.findOneAndUpdate({ _id: params.id },{$push: { exercises: body }})
+//     .then(dbWorkout => {
+//       res.json(dbWorkout);
+//     })
+//     .catch(err => {
+//       res.json(err);
+//     });
+
+// });
+
+
+  module.exports = router;
