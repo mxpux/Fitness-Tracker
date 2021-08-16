@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const {Workout} = require("../models/index.js");
 
+
 router.get("/workouts", (req, res) => {
     Workout.aggregate([
         {
@@ -42,29 +43,41 @@ router.get("/workouts/range", (req, res) => {
         });
 })
 
-  router.post("/workouts", ({ body }, res) => {
-    Workout.create(body)
-      .then(dbWorkout => {
+  router.post("/workouts", (req,res) => {
+    Workout.create ({})
+    .then(dbWorkout => {
         res.json(dbWorkout);
-      })
-      .catch(err => {
+    })
+     .catch(err => {
         res.json(err);
-      });
-  });
+});
+});
 
-  router.put('/workouts/:id', (req, res) => {
-    var id = req.params.id
-    var body = req.body
-    Workout.create({exercises: body})
-    .then(data => {
-      // console.log(data)
-      res.json(data)
-    })
-    .catch(err => {
-      // console.log(err)
-      res.json(err)
-    })
+router.put("/workouts/:id", ({body, params} , res) => {
+  Workout.findByIdAndUpdate(
+      params.id,
+      {$push: {exercises : body }} , 
+      // {new : true, runValidators: true}
+  )
+  .then(dbWorkout => {
+      res.json (dbWorkout);
   })
+  .catch(err=> {
+      res.json(err);
+  });
+});
+
+  // router.put('/workouts/:id', (req, res) => {
+  //   var id = req.params.id
+  //   var body = req.body
+  //   Workout.create({exercises: body})
+  //   .then(data => {
+  //     res.json(data)
+  //   })
+  //   .catch(err => {
+  //     res.json(err)
+  //   })
+  // })
 
 
 //   router.put("/workouts/:id", function({body,params}, res) {
