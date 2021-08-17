@@ -50,15 +50,26 @@ router.get('/workouts/range', (req, res) => {
         })
 })
 
-router.post("/workouts", (req, res) => {
-    Workout.create({})
-        .then(dbWorkout => {
-            res.json(dbWorkout);
-        })
-        .catch(err => {
-            res.json(err);
-        });
-});
+// router.post("/workouts", (req, res) => {
+//     Workout.create({})
+//         .then(dbWorkout => {
+//             res.json(dbWorkout);
+//         })
+//         .catch(err => {
+//             res.json(err);
+//         });
+// });
+
+router.post('/workouts', async (req, res) => {
+    var body = req.body;
+    try{
+      var data = await Workout.create(body)
+      res.json(data)
+    }
+    catch (err) {
+      res.json(err)
+    }
+  })
 
 router.put("/workouts/:id", ({ body, params }, res) => {
     Workout.findByIdAndUpdate(
